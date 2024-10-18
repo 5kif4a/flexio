@@ -1,0 +1,36 @@
+name: flexio
+
+services:
+  api:
+    build:
+      dockerfile: ./flexio.Dockerfile
+    ports:
+    - "9090:8000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+  mongo:
+    image: mongo:7.0
+    volumes:
+      - "./data/mongo:/data/db"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: 'flexio'
+      MONGO_INITDB_ROOT_PASSWORD: 'flexio'
+      MONGO_INITDB_DATABASE: 'flexio'
+    healthcheck:
+      test: mongosh --eval "db.runCommand('ping').ok"
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+  mongo-express:
+    image: mongo-express:latest
+    ports:
+      - "127.0.0.1:8048:8081"
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: flexio
+      ME_CONFIG_BASICAUTH_PASSWORD: 1234
+      ME_CONFIG_MONGODB_URL: mongodb://flexio:flexio@mongo:27017
+    depends_on:
+      mongo:
+        condition: service_healthy
