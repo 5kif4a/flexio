@@ -1,35 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { ErrorFallback, NotFound } from "components";
+import React, { Suspense } from "react";
+import { Provider as StoreProvider } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import { store } from "store";
+import theme from "theme";
+import { routeTree } from "./routeTree.gen";
 
-function App() {
-  const [count, setCount] = useState(0)
+const router = createRouter({
+    routeTree,
+    defaultNotFoundComponent: NotFound,
+    defaultErrorComponent: ErrorFallback,
+});
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+declare module "@tanstack/react-router" {
+    interface Register {
+        router: typeof router;
+    }
 }
 
-export default App
+const TanStackRouterDevtools =
+    import.meta.env.MODE === "production"
+        ? () => null
+        : React.lazy(() =>
+              import("@tanstack/router-devtools").then((res) => ({
+                  default: res.TanStackRouterDevtools,
+              })),
+          );
+
+const App = () => {
+    return (
+        <ThemeProvider theme={theme}>
+            <StoreProvider store={store}>
+                <CssBaseline />
+
+                <ToastContainer
+                    position="bottom-right"
+                    theme={theme.palette.mode}
+                    closeOnClick
+                />
+
+                <RouterProvider router={router} />
+
+                <Suspense>
+                    <TanStackRouterDevtools
+                        router={router}
+                        position="bottom-right"
+                    />
+                </Suspense>
+            </StoreProvider>
+        </ThemeProvider>
+    );
+};
+
+export default App;
