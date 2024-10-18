@@ -8,6 +8,7 @@ beanie = "*"
 motor = "*"
 fastapi = "*"
 uvicorn = "*"
+aiohttp = "*"
 
 [dev-packages]
 black = "*"

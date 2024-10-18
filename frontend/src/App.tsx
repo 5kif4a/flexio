@@ -46,7 +46,7 @@ const App = () => {
                 <Suspense>
                     <TanStackRouterDevtools
                         router={router}
-                        position="bottom-right"
+                        position="top-right"
                     />
                 </Suspense>
             </StoreProvider>

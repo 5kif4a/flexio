@@ -13,15 +13,14 @@ async def lifespan(app: FastAPI):
     print("Starting app")
     from flexio.models import __models__
 
-    client = AsyncIOMotorClient(DB_URI)
-    db = client.get_default_database()
-
-    await init_beanie(db, document_models=__models__)
+    # client = AsyncIOMotorClient(DB_URI)
+    # db = client.get_default_database()
+    # await init_beanie(db, document_models=__models__)
 
     yield
 
     print("Stopping app")
-    client.close()
+    # client.close()
 
 
 app = FastAPI(title="Flexio", lifespan=lifespan)

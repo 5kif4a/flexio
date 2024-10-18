@@ -18,6 +18,15 @@ import { Route as AuthenticatedImport } from "./routes/_authenticated";
 // Create Virtual Routes
 
 const AuthenticatedIndexLazyImport = createFileRoute("/_authenticated/")();
+const AuthenticatedProfileLazyImport = createFileRoute(
+    "/_authenticated/profile",
+)();
+const AuthenticatedNutritionIndexLazyImport = createFileRoute(
+    "/_authenticated/nutrition/",
+)();
+const AuthenticatedFitnessIndexLazyImport = createFileRoute(
+    "/_authenticated/fitness/",
+)();
 
 // Create/Update Routes
 
@@ -33,6 +42,33 @@ const AuthenticatedIndexLazyRoute = AuthenticatedIndexLazyImport.update({
     import("./routes/_authenticated/index.lazy").then((d) => d.Route),
 );
 
+const AuthenticatedProfileLazyRoute = AuthenticatedProfileLazyImport.update({
+    path: "/profile",
+    getParentRoute: () => AuthenticatedRoute,
+} as any).lazy(() =>
+    import("./routes/_authenticated/profile.lazy").then((d) => d.Route),
+);
+
+const AuthenticatedNutritionIndexLazyRoute =
+    AuthenticatedNutritionIndexLazyImport.update({
+        path: "/nutrition/",
+        getParentRoute: () => AuthenticatedRoute,
+    } as any).lazy(() =>
+        import("./routes/_authenticated/nutrition/index.lazy").then(
+            (d) => d.Route,
+        ),
+    );
+
+const AuthenticatedFitnessIndexLazyRoute =
+    AuthenticatedFitnessIndexLazyImport.update({
+        path: "/fitness/",
+        getParentRoute: () => AuthenticatedRoute,
+    } as any).lazy(() =>
+        import("./routes/_authenticated/fitness/index.lazy").then(
+            (d) => d.Route,
+        ),
+    );
+
 // Populate the FileRoutesByPath interface
 
 declare module "@tanstack/react-router" {
@@ -44,11 +80,32 @@ declare module "@tanstack/react-router" {
             preLoaderRoute: typeof AuthenticatedImport;
             parentRoute: typeof rootRoute;
         };
+        "/_authenticated/profile": {
+            id: "/_authenticated/profile";
+            path: "/profile";
+            fullPath: "/profile";
+            preLoaderRoute: typeof AuthenticatedProfileLazyImport;
+            parentRoute: typeof AuthenticatedImport;
+        };
         "/_authenticated/": {
             id: "/_authenticated/";
             path: "/";
             fullPath: "/";
             preLoaderRoute: typeof AuthenticatedIndexLazyImport;
+            parentRoute: typeof AuthenticatedImport;
+        };
+        "/_authenticated/fitness/": {
+            id: "/_authenticated/fitness/";
+            path: "/fitness";
+            fullPath: "/fitness";
+            preLoaderRoute: typeof AuthenticatedFitnessIndexLazyImport;
+            parentRoute: typeof AuthenticatedImport;
+        };
+        "/_authenticated/nutrition/": {
+            id: "/_authenticated/nutrition/";
+            path: "/nutrition";
+            fullPath: "/nutrition";
+            preLoaderRoute: typeof AuthenticatedNutritionIndexLazyImport;
             parentRoute: typeof AuthenticatedImport;
         };
     }
@@ -57,11 +114,17 @@ declare module "@tanstack/react-router" {
 // Create and export the route tree
 
 interface AuthenticatedRouteChildren {
+    AuthenticatedProfileLazyRoute: typeof AuthenticatedProfileLazyRoute;
     AuthenticatedIndexLazyRoute: typeof AuthenticatedIndexLazyRoute;
+    AuthenticatedFitnessIndexLazyRoute: typeof AuthenticatedFitnessIndexLazyRoute;
+    AuthenticatedNutritionIndexLazyRoute: typeof AuthenticatedNutritionIndexLazyRoute;
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+    AuthenticatedProfileLazyRoute: AuthenticatedProfileLazyRoute,
     AuthenticatedIndexLazyRoute: AuthenticatedIndexLazyRoute,
+    AuthenticatedFitnessIndexLazyRoute: AuthenticatedFitnessIndexLazyRoute,
+    AuthenticatedNutritionIndexLazyRoute: AuthenticatedNutritionIndexLazyRoute,
 };
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -70,25 +133,40 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 
 export interface FileRoutesByFullPath {
     "": typeof AuthenticatedRouteWithChildren;
+    "/profile": typeof AuthenticatedProfileLazyRoute;
     "/": typeof AuthenticatedIndexLazyRoute;
+    "/fitness": typeof AuthenticatedFitnessIndexLazyRoute;
+    "/nutrition": typeof AuthenticatedNutritionIndexLazyRoute;
 }
 
 export interface FileRoutesByTo {
+    "/profile": typeof AuthenticatedProfileLazyRoute;
     "/": typeof AuthenticatedIndexLazyRoute;
+    "/fitness": typeof AuthenticatedFitnessIndexLazyRoute;
+    "/nutrition": typeof AuthenticatedNutritionIndexLazyRoute;
 }
 
 export interface FileRoutesById {
     __root__: typeof rootRoute;
     "/_authenticated": typeof AuthenticatedRouteWithChildren;
+    "/_authenticated/profile": typeof AuthenticatedProfileLazyRoute;
     "/_authenticated/": typeof AuthenticatedIndexLazyRoute;
+    "/_authenticated/fitness/": typeof AuthenticatedFitnessIndexLazyRoute;
+    "/_authenticated/nutrition/": typeof AuthenticatedNutritionIndexLazyRoute;
 }
 
 export interface FileRouteTypes {
     fileRoutesByFullPath: FileRoutesByFullPath;
-    fullPaths: "" | "/";
+    fullPaths: "" | "/profile" | "/" | "/fitness" | "/nutrition";
     fileRoutesByTo: FileRoutesByTo;
-    to: "/";
-    id: "__root__" | "/_authenticated" | "/_authenticated/";
+    to: "/profile" | "/" | "/fitness" | "/nutrition";
+    id:
+        | "__root__"
+        | "/_authenticated"
+        | "/_authenticated/profile"
+        | "/_authenticated/"
+        | "/_authenticated/fitness/"
+        | "/_authenticated/nutrition/";
     fileRoutesById: FileRoutesById;
 }
 
@@ -118,11 +196,26 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated.tsx",
       "children": [
-        "/_authenticated/"
+        "/_authenticated/profile",
+        "/_authenticated/",
+        "/_authenticated/fitness/",
+        "/_authenticated/nutrition/"
       ]
+    },
+    "/_authenticated/profile": {
+      "filePath": "_authenticated/profile.lazy.tsx",
+      "parent": "/_authenticated"
     },
     "/_authenticated/": {
       "filePath": "_authenticated/index.lazy.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/fitness/": {
+      "filePath": "_authenticated/fitness/index.lazy.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/nutrition/": {
+      "filePath": "_authenticated/nutrition/index.lazy.tsx",
       "parent": "/_authenticated"
     }
   }

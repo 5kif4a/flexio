@@ -1,4 +1,5 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { Layout } from "components";
 // import { Layout } from "components";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -16,6 +17,6 @@ export const Route = createFileRoute("/_authenticated")({
         //     );
         // }
 
-        return <Outlet />;
+        return <Layout />;
     },
 });
