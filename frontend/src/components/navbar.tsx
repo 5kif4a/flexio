@@ -3,7 +3,7 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import LocalDiningIcon from "@mui/icons-material/LocalDining";
 import { Box, IconButton } from "@mui/material";
-import { useNavigate } from "@tanstack/react-router";
+import { Link } from "./link";
 
 const buttons = [
     {
@@ -16,8 +16,6 @@ const buttons = [
 ];
 
 const Navbar = () => {
-    const navigate = useNavigate();
-
     return (
         <Box
             height="56px"
@@ -26,19 +24,23 @@ const Navbar = () => {
             bgcolor={(theme) => theme.palette.background.paper}
             display="flex"
             justifyContent="space-around"
+            alignItems="center"
         >
             {buttons.map((button, index) => (
-                <IconButton
+                <Link
                     key={index}
-                    onClick={() =>
-                        navigate({
-                            to: button.path,
-                        })
-                    }
-                    color="inherit"
+                    to={button.path}
+                    activeProps={{
+                        color: "primary.main",
+                    }}
+                    inactiveProps={{
+                        color: "text.primary",
+                    }}
                 >
-                    <button.icon />
-                </IconButton>
+                    <IconButton color="inherit">
+                        <button.icon />
+                    </IconButton>
+                </Link>
             ))}
         </Box>
     );

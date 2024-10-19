@@ -1,9 +1,9 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Mutex } from "async-mutex";
+// import { Mutex } from "async-mutex";
 import { API_URL, apiVersion } from "config";
 // import { logout, refreshToken } from "services/auth";
 
-const mutex = new Mutex();
+// const mutex = new Mutex();
 
 export const baseQuery = fetchBaseQuery({
     baseUrl: (API_URL || "/api/") + apiVersion,
